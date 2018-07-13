@@ -84,12 +84,11 @@ class Dealer extends React.Component{
     }
 
     return (
-      <div className="App">
+      <div className="Dealer">
         {myCard}
         <Button variant="contained" color="primary" onClick={()=>this.drawCard()} disabled={this.nextBtnDisable}>
           NEXT
         </Button>
-        {/* TODO: RESET functionality */}
         <Button variant="contained" color="secondary" onClick={()=>this.resetGame()}>
           RESTART
         </Button>
