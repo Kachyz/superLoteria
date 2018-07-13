@@ -4,6 +4,8 @@ import { Route, Switch, BrowserRouter as Router } from "react-router-dom";
 
 import App from "./App"
 import Card from "./components/Card"
+import Dealer from "./components/Dealer"
+import Player from "./components/Player"
 
 // Esto es un componente funcional (no tiene class)
 export default () => {
@@ -12,11 +14,11 @@ export default () => {
       <Router>
         <Switch>
           {/* TODO: should be /card */}
-          <Route exact path="/" component={App} ></Route> 
+          <Route exact path="/" component={Player} ></Route> 
           {/* TODO: Delete next line */}
-          <Route exact path="/card/" component={Card} ></Route> 
+          {/* <Route exact path="/card/" component={Card} ></Route>  */}
           {/* TODO: Usar componente Dealer, quiza cambiar ruta */}
-          <Route exact path="/dealer" component={Card} ></Route>
+          <Route exact path="/dealer" component={Dealer} ></Route>
         </Switch>
       </Router>
     </div>
