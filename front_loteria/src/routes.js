@@ -13,11 +13,7 @@ export default () => {
     <div>
       <Router>
         <Switch>
-          {/* TODO: should be /card */}
           <Route exact path="/" component={Player} ></Route> 
-          {/* TODO: Delete next line */}
-          {/* <Route exact path="/card/" component={Card} ></Route>  */}
-          {/* TODO: Usar componente Dealer, quiza cambiar ruta */}
           <Route exact path="/dealer" component={Dealer} ></Route>
         </Switch>
       </Router>

@@ -16,6 +16,7 @@ class Dealer extends React.Component{
 
   numberOfCards = 4
   myCards = []
+  btnDisable = false
 
   componentDidMount(){
     this.socket = socketIOClient('http://localhost:8000/')
@@ -59,6 +60,12 @@ class Dealer extends React.Component{
     this.setState({state: 'cards were selected'})
   }
 
+  bingo = () => {
+    // Send info and block button
+    this.btnDisable = true
+    this.socket.emit('bingo', this.myCards.map( c => c.name ))
+  }
+
   render(){
     return (
       <div className="Player">
@@ -75,17 +82,19 @@ class Dealer extends React.Component{
           })
         }
         </Grid>        
+        <Grid container spacing={24}>
+          <Grid item sm >
+            <Card
+              key = {this.state.current._id}
+              name = {this.state.current.name}
+              image = {this.state.current.image}
+            />
 
-        <Card
-          key = {this.state.current._id}
-          name = {this.state.current.name}
-          image = {this.state.current.image}
-        />
-
-        <Button variant="contained" color="primary" >
-        {/* TODO: next attrs in this button  onClick={()=>this.drawCard()} disabled={this.nextBtnDisable}> */}
-          Loteria!!
-        </Button>
+            <Button variant="contained" color="primary" onClick={()=>this.bingo()} disabled={this.btnDisable}>
+              Loteria!!
+            </Button>
+          </Grid>
+        </Grid>
       </div>
     );
   }
