@@ -1,5 +1,6 @@
 import React from 'react'
 import axios from 'axios'
+import socketIOClient from 'socket.io-client'
 
 import logo from '../logo.svg';
 import Card from './Card'
@@ -14,6 +15,15 @@ class Dealer extends React.Component{
 
   usedCards = []
   nextBtnDisable = false
+
+  componentDidMount(){
+    this.socket = socketIOClient('http://localhost:8000/')
+    
+    this.socket.on('print-card', card => {
+      console.log('El server dijo:', card.name)
+      this.setState({current: card})
+    })
+  }
 
   componentWillMount(){
     // Hacemos la peticion al backend
@@ -34,10 +44,11 @@ class Dealer extends React.Component{
 
     while(lookingForCard){
       if(this.usedCards.length === cartas.length){
-        console.log('All cards were drawn'); // TODO: Add a placeholder image to show when there are no more cards
-        newCard = {name: "No more cards", image: logo}
+        console.log('All cards were drawn'); 
+        newCard = {name: "No more cards", image: logo} // placeholder
         lookingForCard = false
         this.nextBtnDisable = true;
+        this.socket.emit('out-of-cards', newCard)
         break
       }
 
@@ -47,12 +58,12 @@ class Dealer extends React.Component{
         console.log('salio', newCard.name);
         this.usedCards.push(newCard.name)
         lookingForCard = false
+        this.socket.emit('new-card', newCard)
       } else {
         console.log(newCard.name, 'ya existe');
       }
     }
 
-    this.setState({current: newCard})
   }
 
   resetGame = () => {
@@ -61,13 +72,11 @@ class Dealer extends React.Component{
     this.nextBtnDisable = false
 
     const reset = {name: "Game restarted", image: logo}
-    this.setState({current: reset})
+    this.socket.emit('reset', reset)
   }
 
   render(){
 
-    // const cartas = this.state.cartas
-    // let carta = cartas[Math.floor(Math.random()*cartas.length)]
     let carta = this.state.current
     let myCard
 
@@ -76,10 +85,8 @@ class Dealer extends React.Component{
     } else{
       myCard = <Card
         key = {carta._id}
-        id = {carta._id}
         name = {carta.name}
         image = {carta.image}
-        history = {this.props.history} //quiza no es necesario
       />
     }
 

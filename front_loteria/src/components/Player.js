@@ -1,5 +1,6 @@
 import React from 'react'
 import axios from 'axios'
+import socketIOClient from 'socket.io-client'
 
 import Card from './Card'
 import Button from '@material-ui/core/Button';
@@ -9,11 +10,21 @@ import Grid from '@material-ui/core/Grid';
 class Dealer extends React.Component{
 
   state = {
-    cartas: []
+    cartas: [],
+    current: {name: "Starting soon"}
   }
 
   numberOfCards = 4
   myCards = []
+
+  componentDidMount(){
+    this.socket = socketIOClient('http://localhost:8000/')
+    
+    this.socket.on('print-card', card => {
+      console.log('El server dijo:', card.name)
+      this.setState({current: card})
+    })
+  }
 
   componentWillMount(){
     // Hacemos la peticion al backend
@@ -57,15 +68,19 @@ class Dealer extends React.Component{
             return <Grid item sm key = {carta._id}>
                     <Card
                       key = {carta._id}
-                      id = {carta._id}
                       name = {carta.name}
                       image = {carta.image}
-                      history = {this.props.history} //quiza no es necesario
                     />
                     </Grid>
           })
         }
         </Grid>        
+
+        <Card
+          key = {this.state.current._id}
+          name = {this.state.current.name}
+          image = {this.state.current.image}
+        />
 
         <Button variant="contained" color="primary" >
         {/* TODO: next attrs in this button  onClick={()=>this.drawCard()} disabled={this.nextBtnDisable}> */}
